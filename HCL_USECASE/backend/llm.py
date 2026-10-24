@@ -1,23 +1,16 @@
-from dotenv import load_dotenv
-from langchain_groq import ChatGroq
-import os
+"""LLM configuration - uses Ollama with Qwen model."""
 
-load_dotenv()
+import os
+from langchain_ollama import ChatOllama
+
+MODEL_NAME = os.getenv("OLLAMA_MODEL", "qwen2.5:7b")
+OLLAMA_BASE_URL = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
+
 
 def get_llm():
-    """Get the llm model"""
-    
-    api_key = os.getenv("GROQ_API_KEY")
-    
-    if not api_key:
-        raise ValueError("No api key found")
-    
-    llm = ChatGroq(
-        model="qwen/qwen3.8-27b",  # free + very capable
+    """Get a ChatOllama instance connected to local Qwen."""
+    return ChatOllama(
+        model=MODEL_NAME,
+        base_url=OLLAMA_BASE_URL,
         temperature=0,
-        api_key=api_key
     )
-    print("LLM intialized")
-    
-    return llm
-
