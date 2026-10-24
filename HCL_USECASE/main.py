@@ -1,4 +1,4 @@
-#main.py
+"""FastAPI main application - IT Helpdesk with LangGraph agents."""
 
 from fastapi import FastAPI, HTTPException
 from contextlib import asynccontextmanager
@@ -14,30 +14,33 @@ agent = None
 async def lifespan(app: FastAPI):
     global docs, agent
     print("Application starting")
+    global _graph
     load_vector_store()
     docs = _load_docs()
     agent = build_agent()
     yield
     print("Application shutting down")
-    
-    
+
+
 app = FastAPI(
     title="IT Help Desk",
-    description="IT Helpdesk Multiagent System with Open Telemetry",
+    description="IT Helpdesk Multiagent System with Ollama + LangGraph",
     version="1.0",
-    lifespan=lifespan
+    lifespan=lifespan,
 )
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins= ["*"],
-    allow_methods= ["*"],
-    allow_headers=["*"]
+    allow_origins=["*"],
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
+
 
 @app.get("/health")
 def health():
-    return {"status":"ok", "message":"Application is healty"}
+    return {"status": "ok", "message": "Application is healthy"}
+
 
 @app.post("/chat", response_model=AgentResponse)
 async def chat(request: QueryRequest):
