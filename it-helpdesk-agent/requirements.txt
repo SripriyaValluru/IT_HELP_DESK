@@ -1,0 +1,12 @@
+langgraph
+langchain-anthropic
+langchain-ollama
+chromadb
+opentelemetry-api
+opentelemetry-sdk
+streamlit
+fastapi
+uvicorn
+pandas
+pydantic
+python-dotenv
