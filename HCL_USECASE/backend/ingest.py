@@ -5,7 +5,7 @@ from langchain_community.document_loaders import JSONLoader
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_text_splitters import RecursiveJsonSplitter
 from langchain_community.retrievers import BM25Retriever
-from langchain_core.retrievers import EnsembleRetriever
+from langchain_classic.retrievers import EnsembleRetriever
 from langchain_core.documents import Document
 import json
 
@@ -14,7 +14,7 @@ load_dotenv()
 vector_store = None
 _retriever = None
 
-BASE_PATH = os.path.dirname(os.path.abspath(__file__))
+BASE_PATH = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DATA_DIR = os.path.join(BASE_PATH,"data","golden_it_support_tickets.json")
 def get_embeddings():
     return HuggingFaceEmbeddings(
@@ -63,13 +63,13 @@ def _load_docs() -> list[Document]:
 
 def ingest():
     document = _load_docs()
-    splitter = RecursiveJsonSplitter(
-        chunk_size = 500
-    )
-    chunks = splitter.split_documents(document)
+    # splitter = RecursiveJsonSplitter(
+    #     max_chunk_size = 500
+    # )
+    # chunks = splitter.create_documents(document)
     global vector_store
     vector_store = Chroma.from_documents(
-        documents=chunks,
+        documents=document,
         embedding=get_embeddings(),
         persist_directory="chroma_db"
     )

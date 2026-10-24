@@ -1,7 +1,7 @@
 from datetime import datetime, timezone
 import uuid
-from model import ActionRequest, ActionResult, TicketAction
-from ingest import _load_store, _save_store
+from backend.model import ActionRequest, ActionResult, TicketAction
+from backend.ingest import _load_store, _save_store
 
 
 def _generate_ticket_id() -> str:

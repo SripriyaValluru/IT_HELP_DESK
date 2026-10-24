@@ -1,12 +1,12 @@
 from langchain_core.tools import tool
-from ingest import retrieve_relevant_chunks
-from model import TicketSLAStatus, NextStepPlan, ActionResult, ActionRequest
+from backend.ingest import retrieve_relevant_chunks
+from backend.model import TicketSLAStatus, NextStepPlan, ActionResult, ActionRequest
 from datetime import datetime, timedelta, timezone
-from ingest import _load_docs
-from llm import get_llm
-from config import system_prompt, POLICY_RULES
+from backend.ingest import _load_docs
+from backend.llm import get_llm
+from backend.config import system_prompt, POLICY_RULES
 from langchain_core.messages import SystemMessage, HumanMessage
-from action_service import ACTION_MAP, _timestamp
+from backend.action_service import ACTION_MAP, _timestamp
 
 SLA_MATRIX = {
     "premium":  {"critical": 4,  "high": 8,  "medium": 16, "low": 48},
@@ -80,7 +80,7 @@ def get_ticket_and_sla_status(ticket_id: str) -> TicketSLAStatus:
         raise ValueError(f"Ticket {ticket_id} not found in loaded documents")
 
     # Compute SLA
-    created_at     = datetime.fromisoformat(ticket["created_at"])
+    created_at = datetime.fromisoformat(ticket["created_at"]).replace(tzinfo=timezone.utc)
     resolution_hrs = SLA_MATRIX.get(ticket["sla_plan"], {}).get(ticket["priority"], 48)
     resolution_due = created_at + timedelta(hours=resolution_hrs)
     now = datetime.now(timezone.utc)

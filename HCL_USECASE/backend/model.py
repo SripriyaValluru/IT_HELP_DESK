@@ -1,7 +1,8 @@
 #pydantic models
 
 from pydantic import BaseModel, field_validator , Field
-from typing import Optional, Enum
+from typing import Optional
+from enum import Enum
 
 class ChatRequest(BaseModel):
     query : str
@@ -79,9 +80,8 @@ class ActionResult(BaseModel):
     success:           bool
     
 class QueryRequest(BaseModel):
-    thread_id: str
-    message:   str
-    ticket_id: str | None = None
+    thread_id: Optional[str]
+    message: ChatRequest
 
 
 class HILRequest(BaseModel):
@@ -90,7 +90,7 @@ class HILRequest(BaseModel):
 
 
 class AgentResponse(BaseModel):
-    thread_id:   str
-    response:    str
-    paused:      bool          # True if waiting for HIL
-    next_nodes:  list[str]
+    thread_id:  str
+    resolution: Optional[ResolutionOutput] = None
+    paused:     bool
+    next_nodes: list[str]
